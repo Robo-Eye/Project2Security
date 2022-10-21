@@ -3,13 +3,14 @@ import hashlib
 # Main Class
 # Zach, Tyler, Sean, Jonah
 
-def add_user(): #This is where we will encode
+def add_user(username, password): #This is where we will encode
+    salt = '2rqP06Msi0fu'
+    return(print(base64.encode(hashlib.sha512(password + base64.encode(salt))))) #add to file later
+
+def remove_user(username): #Decode and delete data
     pass
 
-def remove_user(): #Decode and delete data
-    pass
-
-def check_password(): #Decode and check data
+def check_password(username, password): #Decode and check data
     pass
 
 def print_file(): #Be able to print the file
@@ -17,6 +18,13 @@ def print_file(): #Be able to print the file
 
 def save_to_file(): 
     pass 
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
+
 # Task 1: The project allows the application to add a new user to the password store.
 
 # Task 2: The project allows the application to remove a user from the password store.

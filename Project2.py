@@ -1,19 +1,21 @@
+import base64
+import hashlib
 # Main Class
 # Zach, Tyler, Sean, Jonah
 
-def add_user():
+def add_user(): #This is where we will encode
     pass
 
-def remove_user():
+def remove_user(): #Decode and delete data
     pass
 
-def check_password():
+def check_password(): #Decode and check data
     pass
 
-def print_file():
+def print_file(): #Be able to print the file
     pass
 
-def save_to_file():
+def save_to_file(): 
     pass 
 # Task 1: The project allows the application to add a new user to the password store.
 

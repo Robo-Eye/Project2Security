@@ -1,16 +1,18 @@
-import base64
+from base64 import b64encode
 import hashlib
 # Main Class
 # Zach, Tyler, Sean, Jonah
 
-def add_user(username, password): #This is where we will encode
-    salt = '2rqP06Msi0fu'
-    return(print(base64.encode(hashlib.sha512(password + base64.encode(salt))))) #add to file later
+def add_user(user, password): #This is where we will encode
+    file = open('Project2PW.txt', 'w')
+    passwordBytes = password.encode('ascii')
+    salt = b"2rqP06Msi0fu"
+    file.write((passwordBytes + b64encode(salt)).decode("utf-8")) #inner part
 
-def remove_user(username): #Decode and delete data
+def remove_user(user): #Decode and delete data
     pass
 
-def check_password(username, password): #Decode and check data
+def check_password(user, password): #Decode and check data
     pass
 
 def print_file(): #Be able to print the file
@@ -20,7 +22,7 @@ def save_to_file():
     pass 
 
 def main():
-    pass
+    add_user("alice", "S3cret!Pazw")
 
 if __name__ == "__main__":
     main()

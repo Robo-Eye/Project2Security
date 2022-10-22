@@ -5,16 +5,25 @@ import hashlib
 
 
 def add_user(user, password):
-    file = open('Project2PW.txt', 'w')
-    passwordBytes = password.encode('ascii') # Creates a byte representation of the password
-    salt = b"2rqP06Msi0fu" # Creates a byte representation of the salt
-    passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
-    hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
-    result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
-    encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
-    file.write(user + ':$6$' + encodedPasswordSalt.decode("utf-8") + '$' + result)
+    fileRead = open('Project2PW.txt', 'r')
+    Lines = fileRead.readlines()
+    skip = False
+    for line in Lines:
+        if line.startswith(user + ":"):
+            skip = True
+    if skip == False:
+        file = open('Project2PW.txt', 'a')
+        passwordBytes = password.encode('ascii') # Creates a byte representation of the password
+        salt = b"2rqP06Msi0fu" # Creates a byte representation of the salt (Perhaps randomly generate)
+        passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
+        hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
+        result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
+        encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
+        file.write(user + ':$6$' + encodedPasswordSalt.decode("utf-8") + '$' + result + '\n')
+    else:
+        print("User " + user + " is already in our system, please use a different username")
 
-def remove_user(user): #Decode and delete data
+def remove_user(user): #Delete data
     pass
 
 def check_password(user, password): #Decode and check data

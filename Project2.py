@@ -7,8 +7,8 @@ import hashlib
 def add_user(user, password):
     fileRead = open('Project2PW.txt', 'r')
     Lines = fileRead.readlines()
-    skip = False
-    for line in Lines:
+    skip = False # Determines whether to skip adding user
+    for line in Lines: # Sets up for loop to check if user is already in the file
         if line.startswith(user + ":"):
             skip = True
     if skip == False:
@@ -23,8 +23,18 @@ def add_user(user, password):
     else:
         print("User " + user + " is already in our system, please use a different username")
 
-def remove_user(user): #Delete data
-    pass
+def remove_user(user):
+    fileRead = open('Project2PW.txt', 'r') # Opens the file for reading
+    Lines = fileRead.readlines() # Gathers lines to read in file
+    removed = False # Checks to see if user could be found and removed
+    with open("Project2PW.txt", "w") as file:
+        for line in Lines:
+            if not line.startswith(user + ":"):
+                file.write(line) # Rewrites the lines that aren't the user specified
+            else:
+                removed = True # Line with specified user is not rewritten, removed is now true
+    if removed == False:
+        print("We could not find '" + user + "' in our system, please try again")
 
 def check_password(user, password): #Decode and check data
     pass
@@ -36,7 +46,7 @@ def save_to_file():
     pass 
 
 def main():
-    add_user("alice", "S3cret!Pazw")
+    pass
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 from base64 import b64encode
 import hashlib
+from traceback import print_tb
 # Main Class
 # Zach, Tyler, Sean, Jonah
 
@@ -40,12 +41,52 @@ def check_password(user, password): #Decode and check data
     pass
 
 def print_file(): #Be able to print the file
-    pass
+    #try catch block to see if the file exists, if not it will print the error message.
+    try:
+        fileRead = open('Project2PW.txt', 'r') # Opens the file for reading
+        print(fileRead.read())
+    except:
+        print("No such file can be found in the directory.")
 
 def save_to_file(): 
     pass 
 
 def main():
+    answer = ""
+    while answer != "end":
+        #general information prompted to the user
+        print("Welcome to the Secure Password Storage for Password Authentication Project!")
+        print("Developers: Tyler F.  Jonah D.  Sean M.  Zack O.")
+        print("Possible Commands:\n> add-user [USERNAME] [PASSWORD]\n> check-password [USERNAME] [PASSWORD]\n> remove-user [USERNAME]\n> print\n> end")
+        answer = input("Enter Command: ") #gathers user's input
+        #switch logic
+        answers = answer.split(" ") #splits the one line answer into multiple parts to easily parse info into functions
+        if answers[0] == "add-user":
+            if answers.count() <= 1 or answers.count() > 3: #amkes sure their is all the info needed
+                print("information given does not match the required")
+                break
+            else: #if the user enter the valid amount of info the add_user function will be reached
+                add_user(answer[1], answer[2])
+
+        elif answers[0] == "check-password":
+            if answers.count() <= 1 or answers.count() > 3: #amkes sure their is all the info needed
+                print("information given does not match the required.")
+                break
+            else:
+                #check_password()
+                print("check password method here")
+        elif answers[0] == "remove-user":
+            if answers.count() <= 1 or answers.count() > 2: #amkes sure their is all the info needed
+                print("information given does not match the required")
+                break
+            else: 
+                remove_user(answers[1])
+        elif answer == "print":
+            print_file()
+        elif answer == "end":
+            print("program terminated.")
+        else:
+            print("Invalid command please try again.")
     pass
 
 if __name__ == "__main__":

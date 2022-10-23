@@ -21,6 +21,7 @@ def add_user(user, password):
         result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
         encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
         file.write(user + ':$6$' + encodedPasswordSalt.decode("utf-8") + '$' + result + '\n')
+        print("User: " + user + " has succesfully been added to system.")
     else:
         print("User " + user + " is already in our system, please use a different username")
 
@@ -34,6 +35,7 @@ def remove_user(user):
                 file.write(line) # Rewrites the lines that aren't the user specified
             else:
                 removed = True # Line with specified user is not rewritten, removed is now true
+                print("User: " + user + " has succesfully been removed from the system.")
     if removed == False:
         print("We could not find '" + user + "' in our system, please try again")
 

@@ -1,9 +1,11 @@
 from base64 import b64encode
 import hashlib
 from traceback import print_tb
+import random
 # Main Class
 # Zach, Tyler, Sean, Jonah
 
+key = "aeiouqwertyabc3120" # Normally this would be stored in a separate server, would be secret
 
 def add_user(user, password):
     fileRead = open('Project2PW.txt', 'r')
@@ -15,7 +17,18 @@ def add_user(user, password):
     if skip == False:
         file = open('Project2PW.txt', 'a')
         passwordBytes = password.encode('ascii') # Creates a byte representation of the password
-        salt = b"2rqP06Msi0fu" # Creates a byte representation of the salt (Perhaps randomly generate)
+        ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        chars=[]
+        for i in range(16):
+            chars.append(random.choice(ALPHABET))
+        salt = "".join(chars).encode('ascii') # Creates a randomly generated salt
+        
+        saltFile = open('salts.txt', 'a') # Either creates or appends to a salt file that can only be read with key
+        keyBytes = key.encode("utf-8") # Turns the key into a byte representation
+        saltWithKey = (salt + b64encode(keyBytes)).decode("utf-8") # Concatenates salt with base64 encoded key
+        encodedSaltKey = b64encode(saltWithKey.encode("utf-8")) # Encrypts the salted salt
+        saltFile.write(user + ':' + encodedSaltKey.decode("utf-8") + '\n') # Writes the salted salt to the salt file
+
         passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
         hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
         result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
@@ -38,6 +51,13 @@ def remove_user(user):
                 print("User: " + user + " has succesfully been removed from the system.")
     if removed == False:
         print("We could not find '" + user + "' in our system, please try again")
+    else: #remove from salt file as well
+        saltFileRead = open('salts.txt', 'r') # Opens the salt file for reading
+        saltLines = saltFileRead.readlines() # Gathers lines to read in salt file
+        with open("salts.txt", "w") as saltFile:
+            for line in saltLines:
+                if not line.startswith(user + ":"):
+                    saltFile.write(line) # Rewrites the lines that aren't the user specified
 
 def check_password(user, password): #Decode and check data
     #Gathering file contents to be read 

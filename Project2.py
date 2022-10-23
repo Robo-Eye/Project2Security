@@ -93,7 +93,8 @@ def main():
                 print("information given does not match the required")
                 break
             else: #if the user enter the valid amount of info the add_user function will be reached
-                add_user(answer[1], answer[2])
+                print(answers)
+                add_user(answers[1], answers[2])
 
         elif answers[0] == "check-password":
             if count <= 1 or count > 3: #amkes sure their is all the info needed

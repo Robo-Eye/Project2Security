@@ -38,6 +38,32 @@ def remove_user(user):
         print("We could not find '" + user + "' in our system, please try again")
 
 def check_password(user, password): #Decode and check data
+    #Gathering file contents to be read 
+    fileRead = open('Project2PW.txt', 'r')
+    lines = fileRead.readlines()
+
+    #Hashing password to compare with sotred password
+    passwordBytes = password.encode('ascii') # Creates a byte representation of the password
+    salt = b"2rqP06Msi0fu" # Creates a byte representation of the salt (Perhaps randomly generate)
+    passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
+    hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
+    result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
+    encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
+
+    #Comparing the user input with the hashed password 
+    with open("Project2PW.txt", "r"):
+        for line in lines: 
+            if line.startswith(user + ":"):
+                if line.endswith(encodedPasswordSalt):
+                    return True
+                else:
+                    return False
+            else:
+                print("No such user in directory.")
+    
+                
+
+
     pass
 
 def print_file(): #Be able to print the file

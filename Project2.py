@@ -87,22 +87,22 @@ def main():
         answer = input("Enter Command: ") #gathers user's input
         #switch logic
         answers = answer.split(" ") #splits the one line answer into multiple parts to easily parse info into functions
+        count = len(answers)
         if answers[0] == "add-user":
-            if answers.count() <= 1 or answers.count() > 3: #amkes sure their is all the info needed
+            if count <= 1 or count > 3: #amkes sure their is all the info needed
                 print("information given does not match the required")
                 break
             else: #if the user enter the valid amount of info the add_user function will be reached
                 add_user(answer[1], answer[2])
 
         elif answers[0] == "check-password":
-            if answers.count() <= 1 or answers.count() > 3: #amkes sure their is all the info needed
+            if count <= 1 or count > 3: #amkes sure their is all the info needed
                 print("information given does not match the required.")
                 break
             else:
-                #check_password()
-                print("check password method here")
+                check_password(answers[1], answers[2])
         elif answers[0] == "remove-user":
-            if answers.count() <= 1 or answers.count() > 2: #amkes sure their is all the info needed
+            if count <= 1 or count > 2: #amkes sure their is all the info needed
                 print("information given does not match the required")
                 break
             else: 

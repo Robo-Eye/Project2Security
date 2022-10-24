@@ -61,7 +61,7 @@ def remove_user(user):
 
 def check_password(user, password): #Decode and check data
 
-    passwordBytes = password.encode('ascii') # Creates a byte representation of the password
+    passwordBytes = str(password).encode('ascii') # Creates a byte representation of the password
 
     #Gathering file contents to be read 
     fileRead = open('Project2PW.txt', 'r')
@@ -71,11 +71,12 @@ def check_password(user, password): #Decode and check data
 
     for saltLine in saltLines:
         if saltLine.startswith(user + ":"):
-            value = saltLine.split()[-1]
-            value = b64decode(value.encode("utf-8"))
-            salt = value[:-16]
-
-            #encoding the user input the same way as the stored password 
+            value = saltLine.split()[-1] #getting the salted salt value
+            value = value[len(user)+1:len(value)] #getting rid of the excess salt
+            value = b64decode(value.encode("utf-8").decode("utf8")) #decoding salt value
+            salt = value[0:16].decode("utf-8") #decode the extracted salt value
+            salt = bytes(salt.encode('ascii')) #turn salt into a byter representation
+            
             passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
             hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
             result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
@@ -83,38 +84,12 @@ def check_password(user, password): #Decode and check data
 
             for line in lines:
                 if line.startswith(user + ":"):
-                    if line.endswith(encodedPasswordSalt):
+                    if line.endswith('$6$' + encodedPasswordSalt.decode("utf-8") + '$' + result + '\n'):
                         return True
                     else: 
                         return False
-    
-    return False 
+    return False
 
-    
-
-    #Hashing password to compare with sotred password
-    passwordBytes = password.encode('ascii') # Creates a byte representation of the password
-    salt = b"2rqP06Msi0fu" # Creates a byte representation of the salt (Perhaps randomly generate)
-    passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
-    hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
-    result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
-    encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
-
-    #Comparing the user input with the hashed password 
-    with open("Project2PW.txt", "r"):
-        for line in lines: 
-            if line.startswith(user + ":"):
-                if line.endswith(encodedPasswordSalt):
-                    return True
-                else:
-                    return False
-            else:
-                print("No such user in directory.")
-    
-                
-
-
-    pass
 
 def print_file(): #Be able to print the file
     #try catch block to see if the file exists, if not it will print the error message.

@@ -1,4 +1,4 @@
-from base64 import b64encode
+from base64 import b64decode, b64encode
 import hashlib
 from traceback import print_tb
 import random
@@ -60,9 +60,37 @@ def remove_user(user):
                     saltFile.write(line) # Rewrites the lines that aren't the user specified
 
 def check_password(user, password): #Decode and check data
+
+    passwordBytes = password.encode('ascii') # Creates a byte representation of the password
+
     #Gathering file contents to be read 
     fileRead = open('Project2PW.txt', 'r')
     lines = fileRead.readlines()
+    saltRead = open('salts.txt', 'r')
+    saltLines = saltRead.readlines()
+
+    for saltLine in saltLines:
+        if saltLine.startswith(user + ":"):
+            value = saltLine.split()[-1]
+            value = b64decode(value.encode("utf-8"))
+            salt = value[:-16]
+
+            #encoding the user input the same way as the stored password 
+            passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
+            hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
+            result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
+            encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
+
+            for line in lines:
+                if line.startswith(user + ":"):
+                    if line.endswith(encodedPasswordSalt):
+                        return True
+                    else: 
+                        return False
+    
+    return False 
+
+    
 
     #Hashing password to compare with sotred password
     passwordBytes = password.encode('ascii') # Creates a byte representation of the password

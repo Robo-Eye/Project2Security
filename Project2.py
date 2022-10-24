@@ -24,10 +24,12 @@ def add_user(user, password):
         salt = "".join(chars).encode('ascii') # Creates a randomly generated salt
         
         saltFile = open('salts.txt', 'a') # Either creates or appends to a salt file that can only be read with key
-        keyBytes = key.encode("utf-8") # Turns the key into a byte representation
-        saltWithKey = (salt + b64encode(keyBytes)).decode("utf-8") # Concatenates salt with base64 encoded key
-        encodedSaltKey = b64encode(saltWithKey.encode("utf-8")) # Encrypts the salted salt
-        saltFile.write(user + ':' + encodedSaltKey.decode("utf-8") + '\n') # Writes the salted salt to the salt file
+        keyBytes = key.encode("utf-8") # Turns the key into a byte representation (we will use key to salt the salt)
+        saltWithKey = (salt + b64encode(keyBytes)).decode("utf-8") # Concatenates salt with Base64 of the key
+        hashedSaltWithSaltKey = hashlib.sha512(saltWithKey.encode("utf-8")) # Applies SHA-512 to saltWithKey
+        result = b64encode(hashedSaltWithSaltKey.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedSaltWthSaltKey
+        encodedSaltSalt = b64encode(saltWithKey.encode("utf-8")) # Used to get encodedSaltSalt after hashtype in salt file
+        saltFile.write(user + ':$6$' + encodedSaltSalt.decode("utf-8") + '$' + result + '\n')
 
         passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
         hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt

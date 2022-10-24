@@ -3,7 +3,7 @@ import hashlib
 from traceback import print_tb
 import random
 # Main Class
-# Zach, Tyler, Sean, Jonah
+#authors:  Zach, Tyler, Sean, Jonah
 
 key = "aeiouqwertyabc3120" # Normally this would be stored in a separate server, would be secret
 
@@ -118,7 +118,6 @@ def main():
                 print("information given does not match the required")
                 break
             else: #if the user enter the valid amount of info the add_user function will be reached
-                print(answers)
                 add_user(answers[1], answers[2])
 
         elif answers[0] == "check-password":
@@ -126,7 +125,7 @@ def main():
                 print("information given does not match the required.")
                 break
             else:
-                check_password(answers[1], answers[2])
+                print("Is your username and password combination valid: " + check_password(answers[1], answers[2]))
         elif answers[0] == "remove-user":
             if count <= 1 or count > 2: #amkes sure their is all the info needed
                 print("information given does not match the required")

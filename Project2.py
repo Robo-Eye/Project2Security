@@ -22,18 +22,16 @@ def add_user(user, password):
         for i in range(16):
             chars.append(random.choice(ALPHABET))
         salt = "".join(chars).encode('ascii') # Creates a randomly generated salt
-        
-        saltFile = open('salts.txt', 'a') # Either creates or appends to a salt file that can only be read with key
-        keyBytes = key.encode("utf-8") # Turns the key into a byte representation
-        saltWithKey = (salt + b64encode(keyBytes)).decode("utf-8") # Concatenates salt with base64 encoded key
-        encodedSaltKey = b64encode(saltWithKey.encode("utf-8")) # Encrypts the salted salt
-        saltFile.write(user + ':' + encodedSaltKey.decode("utf-8") + '\n') # Writes the salted salt to the salt file
 
         passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
         hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
         result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
-        encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
-        file.write(user + ':$6$' + encodedPasswordSalt.decode("utf-8") + '$' + result + '\n')
+
+        keyBytes = key.encode("utf-8") # Turns the key into a byte representation
+        saltWithKey = (salt + b64encode(keyBytes)).decode("utf-8") # Concatenates salt with base64 encoded key
+        encodedSaltKey = b64encode(saltWithKey.encode("utf-8")) # Encrypts the salted salt
+
+        file.write(user + ':$6$' + encodedSaltKey.decode("utf-8") + '$' + result + '\n')
         print("User: " + user + " has succesfully been added to system.")
     else:
         print("User " + user + " is already in our system, please use a different username")
@@ -51,13 +49,6 @@ def remove_user(user):
                 print("User: " + user + " has succesfully been removed from the system.")
     if removed == False:
         print("We could not find '" + user + "' in our system, please try again")
-    else: #remove from salt file as well
-        saltFileRead = open('salts.txt', 'r') # Opens the salt file for reading
-        saltLines = saltFileRead.readlines() # Gathers lines to read in salt file
-        with open("salts.txt", "w") as saltFile:
-            for line in saltLines:
-                if not line.startswith(user + ":"):
-                    saltFile.write(line) # Rewrites the lines that aren't the user specified
 
 def check_password(user, password): #Decode and check data
 

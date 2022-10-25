@@ -125,7 +125,15 @@ def main():
                 print("information given does not match the required.")
                 break
             else:
-                print("Is your username and password combination valid: " + check_password(answers[1], answers[2]))
+                if check_password(answers[1], answers[2]) :
+                    print("Your username and password combination is valid")
+                else : 
+                    print("Your username and password combination is NOT valid")
+
+                
+                
+                
+                
         elif answers[0] == "remove-user":
             if count <= 1 or count > 2: #amkes sure their is all the info needed
                 print("information given does not match the required")

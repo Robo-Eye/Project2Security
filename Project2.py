@@ -57,28 +57,27 @@ def check_password(user, password): #Decode and check data
     #Gathering file contents to be read 
     fileRead = open('Project2PW.txt', 'r')
     lines = fileRead.readlines()
-    saltRead = open('salts.txt', 'r')
-    saltLines = saltRead.readlines()
 
-    for saltLine in saltLines:
-        if saltLine.startswith(user + ":"):
-            value = saltLine.split()[-1] #getting the salted salt value
-            value = value[len(user)+1:len(value)] #getting rid of the excess salt
-            value = b64decode(value.encode("utf-8").decode("utf8")) #decoding salt value
+    for line in lines:
+        if line.startswith(user + ":$6$"):
+            value = line.split("$")
+            value = value[2]
+            value = b64decode(value.encode("utf-8").decode("utf8"))
             salt = value[0:16].decode("utf-8") #decode the extracted salt value
             salt = bytes(salt.encode('ascii')) #turn salt into a byter representation
-            
+
             passWithSalt = (passwordBytes + b64encode(salt)).decode("utf-8") # Concatenates passwordBytes with Base64 of the salt
             hashedPassWithSalt = hashlib.sha512(passWithSalt.encode("utf-8")) # Applies SHA-512 to passWithSalt
             result = b64encode(hashedPassWithSalt.hexdigest().encode("utf-8")).decode("utf-8") # Applies Base64 to hashedPassWithSalt
-            encodedPasswordSalt = b64encode(passWithSalt.encode("utf-8")) # Used to get encodedPasswordSalt after hashtype in manager
+            
+            keyBytes = key.encode("utf-8") # Turns the key into a byte representation
+            saltWithKey = (salt + b64encode(keyBytes)).decode("utf-8") # Concatenates salt with base64 encoded key
+            encodedSaltKey = b64encode(saltWithKey.encode("utf-8")) # Encrypts the salted salt
 
-            for line in lines:
-                if line.startswith(user + ":"):
-                    if line.endswith('$6$' + encodedPasswordSalt.decode("utf-8") + '$' + result + '\n'):
-                        return True
-                    else: 
-                        return False
+            if line.endswith('$6$' + encodedSaltKey.decode("utf-8") + '$' + result + '\n'):
+                return True
+            else: 
+                return False
     return False
 
 
